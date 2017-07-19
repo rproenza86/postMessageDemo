@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <!--[if IE]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+</head>
+
+<body>
+    <h1>Iframe page</h1>
+    
+    <button id="btnSendMsg">Request iframe height </button>
+     <br />
+    <textarea id="txtMsg"></textarea>
+
+    <script type="text/javascript">
+
+        // check for browser support
+        if ( window.addEventListener ) {
+            
+            // onload
+            window.addEventListener('load', function() {
+
+                const btnSendMsg = document.getElementById('btnSendMsg');
+                const txtMsg = document.getElementById('txtMsg');
+
+                // where to send messages with postMessage
+                var target_origin = 'http://127.0.0.1:8887/index.html';
+                
+                // button onclick handlers
+                // display offsetHeight of iframe containing this document
+                btnSendMsg.onclick = function() {
+                    parent.postMessage( {'task': 'height'}, target_origin );
+                }
+                
+            }, false);
+            
+            
+            // message handler
+            window.addEventListener('message', function(e) {
+                // check message origin
+                if ( e.origin === 'http://127.0.0.1:8887' ) {
+
+                    console.log(`*** message in the iframe ***`, event);
+                    
+                    var task = e.data['task']; // task received in postMessage
+                    // get reference to demo form
+                    var form = document.getElementById('iframeDemoForm');
+                    
+                    switch ( task ) { // postMessage tasks
+                        // display height received in postMessage
+                        case 'height' :
+                            txtMsg.value = 'OffsetHeight of the iframe is: ' + e.data['height'] + 'px';
+                            break;
+                    }
+                    
+                }
+            }, false);
+        }
+    </script>
+</body>
+
+</html>

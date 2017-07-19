@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <!--[if IE]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+</head>
+
+<body>
+    <h1>Post Message probe of concept </h1>
+    <iframe src="./iframePage.html" id="ifrm"></iframe>
+
+
+    <script type="text/javascript">
+
+        // check for browser support
+        if ( window.addEventListener ) {
+            
+            // message handler
+            window.addEventListener('message', function (event) {
+                // check message origin
+                if ( event.origin === 'http://127.0.0.1:8887' ) {
+
+                    console.log(`*** message in index ***`, event);
+
+                    var task = event.data['task']; // task received in postMessage
+                    // get reference to iframe window
+                    var win = document.getElementById('ifrm').contentWindow;
+                    
+                    switch ( task ) { // postMessage tasks
+                        // obtain height of iframe and send in postMessage
+                        case 'height' :
+                            var ht = document.getElementById('ifrm').offsetHeight;
+                            win.postMessage( {'task': 'height', 'height': ht}, event.origin + '/iframePage.html' );
+                            break;                            
+                    }
+                }
+                
+            }, false);
+        }
+
+    </script>
+</body>
+
+</html>
